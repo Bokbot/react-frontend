@@ -1,0 +1,6 @@
+{
+      "bokbothud001": {
+            "host": "$CAM_HOST",
+            "port": $CAM_PORT
+          }
+}

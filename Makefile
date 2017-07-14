@@ -14,18 +14,22 @@ help:
 
 build: builddocker
 
-run: PORT build rundocker
+run: rm PORT CAM_HOST CAM_PORT build rundocker
 
 rundocker:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
 	$(eval TAG := $(shell cat TAG))
 	$(eval PORT := $(shell cat PORT))
+	$(eval CAM_PORT := $(shell cat CAM_PORT))
+	$(eval CAM_HOST := $(shell cat CAM_HOST))
 	chmod 777 $(TMP)
 	@docker run --name=$(NAME) \
 	--cidfile="cid" \
 	-v $(TMP):/tmp \
 	-d \
+	-e CAM_HOST=$(CAM_HOST) \
+	-e CAM_PORT=$(CAM_PORT) \
 	-p $(PORT):80 \
 	-t $(TAG)
 
@@ -51,5 +55,15 @@ logs:
 
 PORT:
 	@while [ -z "$$PORT" ]; do \
-		read -r -p "Enter the port you wish to associate with this container [PORT]: " PORT; echo "$$PORT">>PORT; cat PORT; \
+		read -r -p "Enter the local port you wish to associate with this container [PORT]: " PORT; echo "$$PORT">>PORT; cat PORT; \
+	done ;
+
+CAM_PORT:
+	@while [ -z "$$CAM_PORT" ]; do \
+		read -r -p "Enter the camera port you wish to associate with this container [CAM_PORT]: " CAM_PORT; echo "$$CAM_PORT">>CAM_PORT; cat CAM_PORT; \
+	done ;
+
+CAM_HOST:
+	@while [ -z "$$CAM_HOST" ]; do \
+		read -r -p "Enter the camera host you wish to associate with this container [CAM_HOST]: " CAM_HOST; echo "$$CAM_HOST">>CAM_HOST; cat CAM_HOST; \
 	done ;
